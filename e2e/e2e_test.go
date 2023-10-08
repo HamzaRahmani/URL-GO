@@ -1,11 +1,12 @@
 package e2e
 
 import (
-	"bytes"
-	"encoding/json"
 	"net/http"
-	"net/http/httptest"
 	"testing"
+
+	"github.com/gavv/httpexpect/v2"
+
+	"github.com/HamzaRahmani/urlShortner/internal/server"
 )
 
 type requestBody struct {
@@ -14,21 +15,28 @@ type requestBody struct {
 }
 
 func TestCreateURL(t *testing.T) {
+	srv := server.NewHTTPServer()
+	srv.Start()
+	defer srv.Stop()
+
 	body := requestBody{
 		URL:    "https://www.google.ca/",
 		Expire: false,
 	}
-	input, _ := json.Marshal(body)
-	req := httptest.NewRequest(http.MethodPost, "/url", bytes.NewReader(input))
-	resp := httptest.NewRecorder()
 
+	e := httpexpect.Default(t, "http://localhost:4000")
+
+	e.POST("/url").WithJSON(body).
+		Expect().
+		Status(http.StatusCreated).
+		JSON().Object().ContainsKey("shortenedURL")
 }
 
-func TestGetURL(t *testing.T) {
-	// Arrange
+// func TestGetURL(t *testing.T) {
+// 	// Arrange
 
-	// Act
+// 	// Act
 
-	// Assert
+// 	// Assert
 
-}
+// }
