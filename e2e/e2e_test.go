@@ -24,9 +24,9 @@ func TestCreateURL(t *testing.T) {
 		Expire: false,
 	}
 
-	e := httpexpect.Default(t, "http://localhost:4000")
+	userRequest := httpexpect.Default(t, "http://localhost:4000")
 
-	e.POST("/url").WithJSON(body).
+	userRequest.POST("/url").WithJSON(body).
 		Expect().
 		Status(http.StatusCreated).
 		JSON().Object().ContainsKey("shortenedURL")
