@@ -7,11 +7,12 @@ import (
 	"time"
 )
 
+// TODO: Inject next layer into HTTPServer
 type HTTPServer struct {
 	server *http.Server
 }
 
-// TODO: Create a handler, otherwise test hangs
+// TODO: Create a handler
 func NewHTTPServer() *HTTPServer {
 	return &HTTPServer{
 		&http.Server{
@@ -27,11 +28,9 @@ func (h *HTTPServer) Start() error {
 	if err != nil {
 		return err
 	}
-	err = h.server.Serve(l)
-	if err != nil {
-		return err
-	}
-	return nil
+
+	go func() { err = h.server.Serve(l) }()
+	return err
 }
 
 func (h *HTTPServer) Stop() error {
