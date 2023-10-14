@@ -4,6 +4,7 @@ import (
 	"context"
 	"net"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -13,10 +14,10 @@ type HTTPServer struct {
 }
 
 // TODO: Create a handler
-func NewHTTPServer() *HTTPServer {
+func NewHTTPServer(port int) *HTTPServer {
 	return &HTTPServer{
 		&http.Server{
-			Addr:              "0.0.0.0:4000",
+			Addr:              "0.0.0.0:" + strconv.Itoa(port),
 			Handler:           nil,
 			ReadHeaderTimeout: 3 * time.Second,
 		},
