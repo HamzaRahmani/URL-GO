@@ -9,7 +9,7 @@ The application will conist of three main components:
 
 1. Javascript frontend for users to interact with, framework TBD.
 2. URL service where long URLs will be converted to short URLs and vice versa.
-3. Postresql database to store a data related to shortlink.
+3. Postresql database to store a data related to short URLs.
 
 Stretch Goals:
 
