@@ -19,14 +19,14 @@ type HTTPServer struct {
 func NewHTTPServer(port int) *HTTPServer {
 	return &HTTPServer{
 		&http.Server{
-			Addr:              "0.0.0.0:" + strconv.Itoa(port),
+			Addr:              "localhost:" + strconv.Itoa(port),
 			Handler:           Routes(),
 			ReadHeaderTimeout: 3 * time.Second,
 		},
 	}
 }
 
-func Routes() http.Handler {
+func Routes() *chi.Mux {
 	r := chi.NewRouter()
 
 	r.Get("/info", func(w http.ResponseWriter, r *http.Request) {

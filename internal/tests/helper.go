@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"fmt"
 	"net"
 	"testing"
 	"time"
@@ -22,19 +23,19 @@ func GetFreeTCPPort(t *testing.T) (port int, err error) {
 }
 
 // WaitUntilBusyPort blocks until port is in use
-func WaitUntilBusyPort(port string, t *testing.T) {
+func WaitUntilBusyPort(port int, t *testing.T) {
 	t.Helper()
 	startTime := time.Now()
 
 	for {
 		select {
 		case <-time.After(100 * time.Millisecond):
-			l, err := net.Listen("tcp", port)
+			l, err := net.Listen("tcp", fmt.Sprintf("http://localhost:%d", port))
 			if err != nil {
 				// Port is in use or unavailable
 				if time.Since(startTime) > (100 * time.Millisecond) {
 					// Timeout reached
-					t.Logf("Server is listening on port %s", port)
+					t.Logf("Server is listening on port %d", port)
 					return
 				}
 				continue
