@@ -13,7 +13,7 @@ import (
 func TestServerStart(t *testing.T) {
 	// Arrange
 	port, _ := tests.GetFreeTCPPort(t)
-	srv := server.NewHTTPServer(port)
+	srv := server.NewHTTPServer(port, nil)
 	go func() { _ = srv.Start() }()
 	defer func() { _ = srv.Stop() }()
 	tests.WaitUntilBusyPort(port, t)
@@ -29,7 +29,7 @@ func TestServerStart(t *testing.T) {
 func TestStopServer(t *testing.T) {
 	// Arrange
 	port, _ := tests.GetFreeTCPPort(t)
-	srv := server.NewHTTPServer(port)
+	srv := server.NewHTTPServer(port, nil)
 	go func() { _ = srv.Start() }()
 	tests.WaitUntilBusyPort(port, t)
 

@@ -6,8 +6,6 @@ import (
 	"net/http"
 	"strconv"
 	"time"
-
-	"github.com/go-chi/chi/v5"
 )
 
 // TODO: Inject next layer into HTTPServer
@@ -16,25 +14,14 @@ type HTTPServer struct {
 }
 
 // TODO: Create a handler
-func NewHTTPServer(port int) *HTTPServer {
+func NewHTTPServer(port int, router http.Handler) *HTTPServer {
 	return &HTTPServer{
 		&http.Server{
 			Addr:              "localhost:" + strconv.Itoa(port),
-			Handler:           Routes(),
+			Handler:           router,
 			ReadHeaderTimeout: 3 * time.Second,
 		},
 	}
-}
-
-func Routes() *chi.Mux {
-	r := chi.NewRouter()
-
-	r.Get("/info", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(":)"))
-	})
-
-	return r
 }
 
 func (h *HTTPServer) Start() error {
