@@ -13,13 +13,13 @@ import (
 func TestServerStart(t *testing.T) {
 	// Arrange
 	port, _ := tests.GetFreeTCPPort(t)
-	srv := server.NewHTTPServer(port)
+	srv := server.NewHTTPServer(port, nil)
 	go func() { _ = srv.Start() }()
 	defer func() { _ = srv.Stop() }()
-	tests.WaitUntilBusyPort(string(rune(port)), t)
+	tests.WaitUntilBusyPort(port, t)
 
 	// Act
-	res, err := http.Get(fmt.Sprintf("http://127.0.0.1:%d", port))
+	res, err := http.Get(fmt.Sprintf("http://localhost:%d", port))
 	defer func() { _ = res.Body.Close() }()
 
 	// Assert
@@ -29,13 +29,13 @@ func TestServerStart(t *testing.T) {
 func TestStopServer(t *testing.T) {
 	// Arrange
 	port, _ := tests.GetFreeTCPPort(t)
-	srv := server.NewHTTPServer(port)
+	srv := server.NewHTTPServer(port, nil)
 	go func() { _ = srv.Start() }()
-	tests.WaitUntilBusyPort(string(rune(port)), t)
+	tests.WaitUntilBusyPort(port, t)
 
 	// Act
 	srv.Stop()
-	_, err := http.Get(fmt.Sprintf("http://127.0.0.1:%d", port))
+	_, err := http.Get(fmt.Sprintf("http://localhost:%d", int(port)))
 
 	// Assert
 	assert.NotNil(t, err)

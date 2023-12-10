@@ -14,11 +14,11 @@ type HTTPServer struct {
 }
 
 // TODO: Create a handler
-func NewHTTPServer(port int) *HTTPServer {
+func NewHTTPServer(port int, router http.Handler) *HTTPServer {
 	return &HTTPServer{
 		&http.Server{
-			Addr:              "0.0.0.0:" + strconv.Itoa(port),
-			Handler:           nil,
+			Addr:              "localhost:" + strconv.Itoa(port),
+			Handler:           router,
 			ReadHeaderTimeout: 3 * time.Second,
 		},
 	}
