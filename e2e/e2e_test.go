@@ -1,6 +1,7 @@
 package e2e
 
 import (
+	"fmt"
 	"net/http"
 	"testing"
 
@@ -20,13 +21,14 @@ func TestCreateURL(t *testing.T) {
 	srv := server.NewHTTPServer(port)
 	srv.Start()
 	defer srv.Stop()
+	tests.WaitUntilBusyPort(port, t)
 
 	body := requestBody{
 		URL:    "https://www.google.ca/",
 		Expire: false,
 	}
 
-	userRequest := httpexpect.Default(t, "http://localhost:4000")
+	userRequest := httpexpect.Default(t, fmt.Sprintf("http://localhost:%d", port))
 
 	userRequest.POST("/url").WithJSON(body).
 		Expect().
