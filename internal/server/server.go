@@ -50,7 +50,8 @@ func (h *HTTPServer) Start() error {
 	return err
 }
 
-// Stop stops the HTTP server
+// Stop gracefully shuts down the HTTP server by initiating a shutdown process
+// and waiting for existing connections to complete.
 func (h *HTTPServer) Stop() error {
 	ctx := context.Background()
 	err := h.server.Shutdown(ctx)
