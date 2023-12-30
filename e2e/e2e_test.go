@@ -7,7 +7,6 @@ import (
 
 	"github.com/gavv/httpexpect/v2"
 
-	"github.com/HamzaRahmani/urlShortner/internal/handler"
 	"github.com/HamzaRahmani/urlShortner/internal/server"
 	"github.com/HamzaRahmani/urlShortner/internal/tests"
 )
@@ -19,7 +18,7 @@ type requestBody struct {
 
 func TestCreateURL(t *testing.T) {
 	port, _ := tests.GetFreeTCPPort(t)
-	srv := server.NewHTTPServer(port, handler.NewRouter())
+	srv := server.NewHTTPServer(port, nil)
 	srv.Start()
 	defer srv.Stop()
 	tests.WaitUntilBusyPort(port, t)
