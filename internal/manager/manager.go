@@ -6,4 +6,5 @@ type Manager interface {
 
 type manager struct {
 	// database Database
+	// analyzer Analyzer
 }

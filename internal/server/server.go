@@ -11,12 +11,10 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-// TODO: Inject next layer into HTTPServer
 type HTTPServer struct {
 	server *http.Server
 }
 
-// TODO: Create a handler
 func NewHTTPServer(port int, manager manager.Manager) *HTTPServer {
 	return &HTTPServer{
 		&http.Server{
