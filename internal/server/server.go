@@ -11,10 +11,12 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
+// HTTPServer represents a new HTTP server
 type HTTPServer struct {
 	server *http.Server
 }
 
+// NewHTTPServer creates a new HTTP server configured with the provided port and manager.
 func NewHTTPServer(port int, manager manager.Manager) *HTTPServer {
 	return &HTTPServer{
 		&http.Server{
@@ -25,6 +27,7 @@ func NewHTTPServer(port int, manager manager.Manager) *HTTPServer {
 	}
 }
 
+// NewRouter routes all incoming requests.
 func NewRouter() *chi.Mux {
 	r := chi.NewRouter()
 
@@ -36,6 +39,7 @@ func NewRouter() *chi.Mux {
 	return r
 }
 
+// Start starts the HTTP server.
 func (h *HTTPServer) Start() error {
 	l, err := net.Listen("tcp4", h.server.Addr)
 	if err != nil {
@@ -46,6 +50,7 @@ func (h *HTTPServer) Start() error {
 	return err
 }
 
+// Stop stops the HTTP server
 func (h *HTTPServer) Stop() error {
 	ctx := context.Background()
 	err := h.server.Shutdown(ctx)
