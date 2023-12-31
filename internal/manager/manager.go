@@ -3,7 +3,7 @@ package manager
 import "github.com/HamzaRahmani/urlShortner/internal/database"
 
 type Manager interface {
-	CreateURL(message string) (string, error)
+	CreateURL(rawURL string) (string, error)
 }
 
 type manager struct {
