@@ -100,7 +100,3 @@ func (m *mockManager) CreateURL(message string) (string, error) {
 type responseBody struct {
 	ShortURL string `json:"shortURL"`
 }
-
-type requestBody struct {
-	URL string `json:"url"`
-}
