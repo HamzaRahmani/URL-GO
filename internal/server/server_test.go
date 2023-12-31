@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"net/http"
 	"testing"
-	"time"
 
 	"github.com/HamzaRahmani/urlShortner/internal/server"
 	"github.com/HamzaRahmani/urlShortner/internal/tests"
@@ -55,7 +54,6 @@ func TestCreateURLHandler(t *testing.T) {
 	go func() { _ = srv.Start() }()
 	defer func() { _ = srv.Stop() }()
 	tests.WaitUntilBusyPort(port, t)
-	time.Sleep(10 * time.Millisecond)
 
 	urlManager.On("CreateURL", "https://www.google.ca/").Return("urlGO", nil).Once()
 
