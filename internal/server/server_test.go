@@ -1,10 +1,12 @@
 package server_test
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"testing"
+	"time"
 
 	"github.com/HamzaRahmani/urlShortner/internal/server"
 	"github.com/HamzaRahmani/urlShortner/internal/tests"
@@ -25,6 +27,7 @@ func TestServerStart(t *testing.T) {
 	defer func() { _ = res.Body.Close() }()
 
 	// Assert
+
 	assert.NoError(t, err)
 }
 
@@ -37,7 +40,7 @@ func TestStopServer(t *testing.T) {
 
 	// Act
 	srv.Stop()
-	_, err := http.Get(fmt.Sprintf("http://localhost:%d", int(port)))
+	_, err := http.Get(fmt.Sprintf("http://localhost:%d", port))
 
 	// Assert
 	assert.NotNil(t, err)
@@ -50,23 +53,35 @@ func TestCreateURLHandler(t *testing.T) {
 	port, _ := tests.GetFreeTCPPort(t)
 	srv := server.NewHTTPServer(port, urlManager)
 	go func() { _ = srv.Start() }()
+	defer func() { _ = srv.Stop() }()
 	tests.WaitUntilBusyPort(port, t)
+	time.Sleep(10 * time.Millisecond)
 
-	urlManager.On("CreateURL", "https://www.google.ca/").Return("urlGO", nil)
+	urlManager.On("CreateURL", "https://www.google.ca/").Return("urlGO", nil).Once()
+
+	var buf bytes.Buffer
+	err := json.NewEncoder(&buf).Encode(struct {
+		URL string `json:"url"`
+	}{
+		"https://www.google.ca/",
+	})
 
 	// Act
-	srv.Stop()
-	resp, err := http.Post(fmt.Sprintf("http://localhost:%d/url", int(port)), "application/json", nil)
+	resp, err := http.Post(fmt.Sprintf("http://localhost:%d/url", port), "application/json", &buf)
+
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
 
 	// Assert
-	assert.NoError(t, err)
 	assert.Equal(t, resp.StatusCode, http.StatusCreated)
 
-	var body ResponseBody
+	var body responseBody
 	err = json.NewDecoder(resp.Body).Decode(&body)
 	assert.NoError(t, err, "Error decoding JSON")
 
-	expectedBdoy := ResponseBody{ShortURL: "urlGO"}
+	expectedBdoy := responseBody{ShortURL: "urlGO"}
 	assert.Equal(t, expectedBdoy, body, "Unexpected response data")
 
 	urlManager.AssertExpectations(t)
@@ -78,10 +93,14 @@ type mockManager struct {
 
 func (m *mockManager) CreateURL(message string) (string, error) {
 	args := m.Called(message)
-	return args.Get(0).(string), args.Error(1)
+	return args.String(0), args.Error(1)
 }
 
 // ResponseBody represents the structure of the expected JSON response.
-type ResponseBody struct {
+type responseBody struct {
 	ShortURL string `json:"shortURL"`
+}
+
+type requestBody struct {
+	URL string `json:"url"`
 }
