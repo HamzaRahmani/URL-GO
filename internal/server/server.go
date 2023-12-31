@@ -2,6 +2,8 @@ package server
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"net"
 	"net/http"
 	"strconv"
@@ -21,22 +23,47 @@ func NewHTTPServer(port int, manager manager.Manager) *HTTPServer {
 	return &HTTPServer{
 		&http.Server{
 			Addr:              "localhost:" + strconv.Itoa(port),
-			Handler:           NewRouter(),
+			Handler:           NewRouter(manager),
 			ReadHeaderTimeout: 3 * time.Second,
 		},
 	}
 }
 
 // NewRouter routes all incoming requests.
-func NewRouter() *chi.Mux {
+func NewRouter(m manager.Manager) *chi.Mux {
 	r := chi.NewRouter()
 
 	r.Get("/info", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(":)"))
+		w.Write([]byte("hello"))
+	})
+
+	r.Post("/url", func(w http.ResponseWriter, r *http.Request) {
+		var body requestBody
+		err := json.NewDecoder(r.Body).Decode(&body)
+		if err != nil {
+			http.Error(w, fmt.Sprintf(http.StatusText(400), ": ", err), 400)
+			return
+		}
+
+		shortURL, _ := m.CreateURL(body.URL)
+
+		data := &responseBody{ShortURL: shortURL}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusCreated)
+		json.NewEncoder(w).Encode(data)
+
 	})
 
 	return r
+}
+
+type requestBody struct {
+	URL string `json:"url"`
+}
+
+type responseBody struct {
+	ShortURL string `json:"shortURL"`
 }
 
 // Start starts the HTTP server.
