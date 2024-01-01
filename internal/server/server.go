@@ -39,7 +39,7 @@ func NewRouter(m manager.Manager) *chi.Mux {
 	})
 
 	r.Post("/url", func(w http.ResponseWriter, r *http.Request) {
-		var body requestBody
+		var body createURLRequest
 		err := json.NewDecoder(r.Body).Decode(&body)
 		if err != nil {
 			http.Error(w, fmt.Sprintf(http.StatusText(400), ": ", err), 400)
@@ -58,7 +58,7 @@ func NewRouter(m manager.Manager) *chi.Mux {
 	return r
 }
 
-type requestBody struct {
+type createURLRequest struct {
 	URL string `json:"url"`
 }
 

@@ -1,6 +1,8 @@
 package manager
 
-import "github.com/HamzaRahmani/urlShortner/internal/database"
+import (
+	"github.com/HamzaRahmani/urlShortner/internal/database"
+)
 
 type Manager interface {
 	CreateURL(rawURL string) (string, error)
@@ -16,5 +18,8 @@ func NewManager(dB database.Database) *manager {
 }
 
 func (m *manager) CreateURL(text string) (string, error) {
+	// hash url
+	// insert hashed url into DB
+	// return hashed url to user
 	return "", nil
 }

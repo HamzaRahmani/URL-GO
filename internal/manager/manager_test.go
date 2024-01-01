@@ -11,9 +11,9 @@ import (
 
 func TestCreateURL(t *testing.T) {
 	t.Parallel()
+	inputURL := "https://www.google.ca/"
 
 	// Arrange
-	inputURL := "https://www.google.ca/"
 	database := new(mockDatabase)
 	database.On("CreateURL", mock.MatchedBy(isURL)).Return(mock.MatchedBy(isURL), nil).Once()
 
@@ -44,4 +44,10 @@ func isURL(input string) bool {
 
 type mockDatabase struct {
 	mock.Mock
+}
+
+// CreateURL implements database.Database.
+func (m *mockDatabase) CreateURL(url string) (string, error) {
+	args := m.Called(url)
+	return args.String(0), args.Error(1)
 }
