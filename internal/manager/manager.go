@@ -23,8 +23,6 @@ func NewManager(dB database.Database) *manager {
 }
 
 func (m *manager) CreateURL(originalURL string) (string, error) {
-	// insert hashed url into DB
-	// return hashed url to user
 	md5 := getMD5Hash(originalURL)
 	hash := encodeToBase62(md5)[:7]
 
