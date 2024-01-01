@@ -36,6 +36,11 @@ func TestFindURL(t *testing.T) {
 
 }
 
+func TestCreateDuplicateURL(t *testing.T) {
+	// Expected behaviour is to return the existing URL
+
+}
+
 func isURL(input string) bool {
 	urlRegex := regexp.MustCompile(`^(http|https):\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}(\/\S*)?$`)
 	return urlRegex.MatchString(input)
