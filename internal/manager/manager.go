@@ -18,7 +18,8 @@ func NewManager(dB database.Database) *manager {
 }
 
 func (m *manager) CreateURL(text string) (string, error) {
-	// hash url
+	// hash url - md5, then base62 encode, take first 7 characters
+	// check if hash url already exists, if it does generate a new url
 	// insert hashed url into DB
 	// return hashed url to user
 	return "", nil
