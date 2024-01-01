@@ -44,9 +44,8 @@ func (s *PostgresStore) Init() error {
 
 func (s *PostgresStore) createURLTable() error {
 	query := `create table if not exists url (
-		id serial primary key,
-		raw_url varchar(50),
-		hashed_url varchar(50),
+		hash char(7) primary key NOT NULL,
+		hashed_url varchar(50) NOT NULL,
 		created_at timestamp default current_timestamp
 	)`
 
