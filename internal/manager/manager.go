@@ -1,6 +1,10 @@
 package manager
 
 import (
+	"crypto/md5"
+	"encoding/hex"
+	"math/big"
+
 	"github.com/HamzaRahmani/urlShortner/internal/database"
 )
 
@@ -18,10 +22,27 @@ func NewManager(dB database.Database) *manager {
 	return &manager{database: dB}
 }
 
-func (m *manager) CreateURL(text string) (string, error) {
-	// hash url - md5, then base62 encode, take first 7 characters
-	// check if hash url already exists, if it does generate a new url
-	// insert hashed url into DB
-	// return hashed url to user
-	return "", nil
+func (m *manager) CreateURL(originalURL string) (string, error) {
+	md5 := getMD5Hash(originalURL)
+	hash := encodeToBase62(md5)[:7]
+
+	err := m.database.CreateURL(hash, originalURL)
+
+	if err != nil {
+		return "", err
+	}
+
+	return hash, nil
+}
+
+func getMD5Hash(text string) string {
+	hasher := md5.New()
+	hasher.Write([]byte(text))
+	return hex.EncodeToString(hasher.Sum(nil))
+}
+
+func encodeToBase62(text string) string {
+	var i big.Int
+	i.SetBytes([]byte(text))
+	return i.Text(62)
 }

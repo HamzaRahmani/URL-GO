@@ -18,6 +18,7 @@ type requestBody struct {
 
 func TestCreateURL(t *testing.T) {
 	port, _ := tests.GetFreeTCPPort(t)
+	// TODO: Add manager and database
 	srv := server.NewHTTPServer(port, nil)
 	srv.Start()
 	defer srv.Stop()

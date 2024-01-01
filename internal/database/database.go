@@ -11,7 +11,7 @@ import (
 )
 
 type Database interface {
-	CreateURL(url string) (string, error)
+	CreateURL(shortURL string, originalURL string) error
 	// GetURL(hashedURL string) error
 	// DeleteURL(hashedURL string) error
 }
@@ -47,7 +47,7 @@ func (s *PostgresStore) createURLTable() error {
 		id serial primary key,
 		raw_url varchar(50),
 		hashed_url varchar(50),
-		created_at timestamp
+		created_at timestamp default current_timestamp
 	)`
 
 	_, err := s.db.Exec(context.TODO(), query)
