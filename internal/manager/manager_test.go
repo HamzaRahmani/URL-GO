@@ -12,11 +12,11 @@ import (
 
 func TestCreateURL(t *testing.T) {
 	t.Parallel()
-	inputURL := "https://www.google.ca/"
+	inputURL := "https://www.google.ca"
 
 	// Arrange
 	database := new(mockDatabase)
-	database.On("CreateURL", mock.MatchedBy(isURL)).Return(mock.MatchedBy(isURL), nil).Once()
+	database.On("CreateURL", mock.AnythingOfType("string"), mock.MatchedBy(isURL)).Return(nil).Once()
 
 	m := manager.NewManager(database)
 
@@ -26,7 +26,7 @@ func TestCreateURL(t *testing.T) {
 	// Assert
 	assert.NoError(t, err)
 	assert.NotEmpty(t, hashedURL)
-	assert.Less(t, hashedURL, inputURL)
+	assert.Less(t, len(hashedURL), len(inputURL))
 	assert.Len(t, getHash(hashedURL), 7)
 
 	database.AssertExpectations(t)
@@ -51,7 +51,7 @@ type mockDatabase struct {
 }
 
 // CreateURL implements database.Database.
-func (m *mockDatabase) CreateURL(url string) (string, error) {
-	args := m.Called(url)
-	return args.String(0), args.Error(1)
+func (m *mockDatabase) CreateURL(url string, originalURL string) error {
+	args := m.Called(url, originalURL)
+	return args.Error(0)
 }
