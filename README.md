@@ -24,7 +24,7 @@ graph TD;
 
 ## Database
 
-For this project I went with SQL instead of NoSQL due to two reasons. I originally intended to use this as an opportunity to learn GORM and also reasoned that the relational nature of the analytics service may benefit from it. If I were to redo this project I would likely just select Redis due to its ease of use and scalability.
+For this project I went with SQL instead of NoSQL due to two reasons. I originally intended to use this as an opportunity to learn GORM and also reasoned that the relational nature of the analytics service may benefit from it. If I were to redo this project I would likely just select Redis due to its ease of use, lower latency and scalability.
 
 | URL          |                       |
 | ------------ | :-------------------: |
