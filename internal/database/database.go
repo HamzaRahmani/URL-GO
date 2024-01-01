@@ -20,6 +20,7 @@ type PostgresStore struct {
 	db *pgxpool.Pool
 }
 
+// TODO: define postgres connection info and inject via config layer
 func NewPostgresStore() (*PostgresStore, error) {
 	// os.Getenv("DATABASE_URL")
 	dbpool, err := pgxpool.New(context.Background(), "postgresql://postgres:gobank@localhost:5432/postgres")

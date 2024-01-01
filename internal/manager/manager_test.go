@@ -2,6 +2,7 @@ package manager_test
 
 import (
 	"regexp"
+	"strings"
 	"testing"
 
 	"github.com/HamzaRahmani/urlShortner/internal/manager"
@@ -26,6 +27,7 @@ func TestCreateURL(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotEmpty(t, hashedURL)
 	assert.Less(t, hashedURL, inputURL)
+	assert.Len(t, getHash(hashedURL), 7)
 
 	database.AssertExpectations(t)
 }
@@ -35,11 +37,13 @@ func TestFindURL(t *testing.T) {
 }
 
 func isURL(input string) bool {
-	// Define a regular expression for matching URLs
 	urlRegex := regexp.MustCompile(`^(http|https):\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}(\/\S*)?$`)
-
-	// Use the MatchString function to check if the input matches the regex
 	return urlRegex.MatchString(input)
+}
+
+func getHash(hashedURL string) string {
+	lastSlashIndex := strings.LastIndex(hashedURL, "/")
+	return hashedURL[lastSlashIndex+1:]
 }
 
 type mockDatabase struct {

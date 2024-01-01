@@ -10,6 +10,7 @@ type Manager interface {
 
 type manager struct {
 	database database.Database
+	// TODO: define domain and inject via config layer
 	// analyzer Analyzer
 }
 
