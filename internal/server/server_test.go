@@ -72,17 +72,20 @@ func TestCreateURLHandler(t *testing.T) {
 	}
 	defer resp.Body.Close()
 
-	// Assert
-	assert.Equal(t, resp.StatusCode, http.StatusCreated)
-
 	var body responseBody
 	err = json.NewDecoder(resp.Body).Decode(&body)
-	assert.NoError(t, err, "Error decoding JSON")
 
+	// Assert
+	assert.Equal(t, resp.StatusCode, http.StatusCreated)
+	assert.NoError(t, err, "Error decoding JSON")
 	expectedBdoy := responseBody{ShortURL: "urlGO"}
 	assert.Equal(t, expectedBdoy, body, "Unexpected response data")
 
 	urlManager.AssertExpectations(t)
+}
+
+func TestGetURLHandler(t *testing.T) {
+
 }
 
 type mockManager struct {
