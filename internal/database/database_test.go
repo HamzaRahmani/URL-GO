@@ -1,37 +1,49 @@
 package database_test
 
 import (
+	"fmt"
+	"log"
 	"os"
 	"testing"
 
+	"github.com/HamzaRahmani/urlShortner/internal/database"
 	"github.com/HamzaRahmani/urlShortner/internal/tests"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/stretchr/testify/assert"
 )
 
 var testDbInstance *pgxpool.Pool
+var testDbAddress string
 
 func TestMain(m *testing.M) {
 	testDB := tests.SetupTestDatabase()
 	testDbInstance = testDB.DbInstance
+	testDbAddress = testDB.DbAddress
 	defer testDB.TearDown()
 	os.Exit(m.Run())
 }
 
-// func TestCreateURL(t *testing.T) {
-// 	// Arrange
-// 	db, err := database.NewPostgresStore()
-// 	mock.Conn().PgConn()
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
+func TestCreateURL(t *testing.T) {
+	// Arrange
+	db, err := database.NewPostgresStore(
+		fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable",
+			tests.DbUser,
+			tests.DbPass,
+			testDbAddress,
+			tests.DbName),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-// 	mock.ExpectExec("INSERT INTO url").WithArgs("abcdefg", "http://longurl.ca")
+	// Act
+	var row database.URL
+	row, err = db.CreateURL("abcdefg", "http://longurl.ca")
+	if err != nil {
+		t.Errorf("error was not expected while updating: %s", err)
+	}
 
-// 	// Act
-// 	if err = db.CreateURL("abcdefg", "http://longurl.ca"); err != nil {
-// 		t.Errorf("error was not expected while updating: %s", err)
-// 	}
-
-// 	// Assert
-// 	assert.NoError(t, err)
-// }
+	// Assert
+	assert.NoError(t, err)
+	assert.NotNil(t, row)
+}
