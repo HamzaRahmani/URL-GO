@@ -26,13 +26,13 @@ func (m *manager) CreateURL(originalURL string) (string, error) {
 	md5 := getMD5Hash(originalURL)
 	hash := encodeToBase62(md5)[:7]
 
-	row, err := m.database.CreateURL(hash, originalURL)
+	row, err := m.database.InsertURL(hash, originalURL)
 
 	if err != nil {
 		return "", err
 	}
 
-	return hash, nil
+	return row.Hash, nil
 }
 
 func getMD5Hash(text string) string {

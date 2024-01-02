@@ -5,6 +5,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/HamzaRahmani/urlShortner/internal/database"
 	"github.com/HamzaRahmani/urlShortner/internal/manager"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -15,10 +16,14 @@ func TestCreateURL(t *testing.T) {
 	inputURL := "https://www.google.ca"
 
 	// Arrange
-	database := new(mockDatabase)
-	database.On("CreateURL", mock.AnythingOfType("string"), mock.MatchedBy(isURL)).Return(nil).Once()
+	db := new(mockDatabase)
+	db.On(
+		"InsertURL",
+		mock.AnythingOfType("string"),
+		mock.MatchedBy(isURL),
+	).Return(database.URL{Hash: "abcdefg"}, nil).Once()
 
-	m := manager.NewManager(database)
+	m := manager.NewManager(db)
 
 	// Act
 	hashedURL, err := m.CreateURL(inputURL)
@@ -29,7 +34,7 @@ func TestCreateURL(t *testing.T) {
 	assert.Less(t, len(hashedURL), len(inputURL))
 	assert.Len(t, getHash(hashedURL), 7)
 
-	database.AssertExpectations(t)
+	db.AssertExpectations(t)
 }
 
 func TestFindURL(t *testing.T) {
@@ -56,7 +61,7 @@ type mockDatabase struct {
 }
 
 // CreateURL implements database.Database.
-func (m *mockDatabase) CreateURL(url string, originalURL string) error {
-	args := m.Called(url, originalURL)
-	return args.Error(0)
+func (m *mockDatabase) InsertURL(hash string, originalURL string) (database.URL, error) {
+	args := m.Called(hash, originalURL)
+	return args.Get(0).(database.URL), args.Error(1)
 }
