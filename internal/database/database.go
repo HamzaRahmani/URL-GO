@@ -11,7 +11,7 @@ import (
 )
 
 type Database interface {
-	CreateURL(shortURL string, originalURL string) error
+	CreateURL(hash string, originalURL string) error
 	// GetURL(hashedURL string) error
 	// DeleteURL(hashedURL string) error
 }
@@ -21,9 +21,9 @@ type PostgresStore struct {
 }
 
 // TODO: define postgres connection info and inject via config layer
-func NewPostgresStore() (*PostgresStore, error) {
+func NewPostgresStore(connString string) (*PostgresStore, error) {
 	// os.Getenv("DATABASE_URL")
-	dbpool, err := pgxpool.New(context.Background(), "postgresql://postgres:gobank@localhost:5432/postgres")
+	dbpool, err := pgxpool.New(context.Background(), connString)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to create connection pool: %v\n", err)
 		os.Exit(1)
@@ -45,7 +45,7 @@ func (s *PostgresStore) Init() error {
 func (s *PostgresStore) createURLTable() error {
 	query := `create table if not exists url (
 		hash char(7) primary key NOT NULL,
-		hashed_url varchar(50) NOT NULL,
+		original_url varchar(50) NOT NULL,
 		created_at timestamp default current_timestamp
 	)`
 
@@ -57,11 +57,11 @@ func (s *PostgresStore) createURLTable() error {
 	return err
 }
 
-func (s PostgresStore) CreateURL(hashedURL string) error {
+func (s PostgresStore) CreateURL(hash string, originalURL string) error {
 	// query := `
 	// insert into url
-	// (raw_url, hashed_url, created_at)
-	// values ($1, $2, $3)
+	// (raw_url, hashed_url)
+	// values ($1, $2)
 	// `
 
 	return nil
