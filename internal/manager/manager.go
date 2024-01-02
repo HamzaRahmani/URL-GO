@@ -26,7 +26,7 @@ func (m *manager) CreateURL(originalURL string) (string, error) {
 	md5 := getMD5Hash(originalURL)
 	hash := encodeToBase62(md5)[:7]
 
-	err := m.database.CreateURL(hash, originalURL)
+	row, err := m.database.CreateURL(hash, originalURL)
 
 	if err != nil {
 		return "", err

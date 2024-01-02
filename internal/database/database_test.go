@@ -38,7 +38,7 @@ func TestCreateURL(t *testing.T) {
 
 	// Act
 	var row database.URL
-	row, err = db.CreateURL("abcdefg", "http://longurl.ca")
+	row, err = db.InsertURL("abcdefg", "http://longurl.ca")
 	if err != nil {
 		t.Errorf("error was not expected while updating: %s", err)
 	}

@@ -11,7 +11,7 @@ import (
 )
 
 type Database interface {
-	CreateURL(hash string, originalURL string) error
+	InsertURL(hash string, originalURL string) (URL, error)
 	// GetURL(hashedURL string) error
 	// DeleteURL(hashedURL string) error
 }
@@ -57,14 +57,21 @@ func (s *PostgresStore) createURLTable() error {
 	return err
 }
 
-func (s PostgresStore) CreateURL(hash string, originalURL string) error {
-	// query := `
-	// insert into url
-	// (raw_url, hashed_url)
-	// values ($1, $2)
-	// `
+func (s PostgresStore) InsertURL(hash string, originalURL string) (URL, error) {
+	query := `
+	insert into url
+	(hash, original_url)
+	values ($1, $2)
+	returning hash, original_url, created_at
+	`
+	var row URL
+	err := s.db.QueryRow(context.Background(), query, hash, originalURL).Scan(&row.Hash, &row.OriginalURL, &row.CreatedAt)
+	if err != nil {
+		log.Fatalf("Failed to insert URL: %s", err)
 
-	return nil
+	}
+
+	return row, err
 }
 func (s PostgresStore) DeleteURL(hashedURL string) error {
 	return nil
@@ -75,16 +82,7 @@ func (s PostgresStore) GetURL(hashedURL string) (string, error) {
 
 // docker run --name some-postgres -e POSTGRES_PASSWORD=gobank -p 5432:5432 -d postgres
 type URL struct {
-	ID        int       `json:"id"`
-	RawURL    string    `json:"rawURL"`
-	HashedURL string    `json:"hashedURL"`
-	CreatedAt time.Time `json:"createdAt"`
-}
-
-func NewURL(rawURL, hashedURL string) *URL {
-	return &URL{
-		RawURL:    rawURL,
-		HashedURL: hashedURL,
-		CreatedAt: time.Now().UTC(),
-	}
+	Hash        string    `json:"hash"`
+	OriginalURL string    `json:"hashedURL"`
+	CreatedAt   time.Time `json:"createdAt"`
 }
