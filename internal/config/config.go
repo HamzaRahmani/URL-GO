@@ -5,11 +5,11 @@ import (
 	"strings"
 )
 
-type config struct {
+type Config struct {
 	env map[string]string
 }
 
-func Init(env []string) *config {
+func Init(env []string) *Config {
 
 	mappedEnv := make(map[string]string)
 	for _, t := range env {
@@ -17,26 +17,26 @@ func Init(env []string) *config {
 		mappedEnv[key] = value
 	}
 
-	return &config{mappedEnv}
+	return &Config{mappedEnv}
 }
 
-func (c config) GetListeningPort() (int, error) {
+func (c Config) GetListeningPort() (int, error) {
 	port := c.env["LISTENING_PORT"]
 	portInt, _ := strconv.Atoi(port)
 	return portInt, nil
 }
 
-func (c config) GetDatabaseHost() (string, error) {
+func (c Config) GetDatabaseHost() (string, error) {
 	host := c.env["DATABASE_HOST"]
 	return host, nil
 }
 
-func (c config) GetDatabaseUser() (string, error) {
+func (c Config) GetDatabaseUser() (string, error) {
 	host := c.env["DATABASE_USER"]
 	return host, nil
 }
 
-func (c config) GetDatabasePassword() (string, error) {
+func (c Config) GetDatabasePassword() (string, error) {
 	password := c.env["DATABASE_PASSWORD"]
 	return password, nil
 }
