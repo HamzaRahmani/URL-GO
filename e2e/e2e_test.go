@@ -22,7 +22,7 @@ type requestBody struct {
 
 func TestCreateURL(t *testing.T) {
 	port, _ := tests.GetFreeTCPPort(t)
-
+	// TODO: use ephemeral database used in database_test.go
 	db, err := database.NewPostgresStore(CreateConnString())
 	if err != nil {
 		panic(err)
