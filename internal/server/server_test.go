@@ -115,8 +115,13 @@ type mockManager struct {
 	mock.Mock
 }
 
-func (m *mockManager) CreateURL(message string) (string, error) {
-	args := m.Called(message)
+func (m *mockManager) CreateURL(rawURL string) (string, error) {
+	args := m.Called(rawURL)
+	return args.String(0), args.Error(1)
+}
+
+func (m *mockManager) GetURL(hash string) (string, error) {
+	args := m.Called(hash)
 	return args.String(0), args.Error(1)
 }
 
