@@ -1,6 +1,8 @@
 package e2e
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
@@ -33,7 +35,6 @@ func TestMain(m *testing.M) {
 
 func TestCreateURL(t *testing.T) {
 	port, _ := tests.GetFreeTCPPort(t)
-	// TODO: use ephemeral database used in database_test.go
 	db, err := database.NewPostgresStore(
 		fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable",
 			tests.DbUser,
@@ -64,6 +65,51 @@ func TestCreateURL(t *testing.T) {
 		JSON().Object().ContainsKey("shortURL")
 }
 
+func TestGetURL(t *testing.T) {
+	//Arrange
+	port, _ := tests.GetFreeTCPPort(t)
+	db, err := database.NewPostgresStore(
+		fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable",
+			tests.DbUser,
+			tests.DbPass,
+			testDbAddress,
+			tests.DbName),
+	)
+
+	if err != nil {
+		panic(err)
+	}
+	m := manager.NewManager(db)
+	srv := server.NewHTTPServer(port, m)
+	srv.Start()
+	defer srv.Stop()
+	tests.WaitUntilBusyPort(port, t)
+
+	var buf bytes.Buffer
+	requestBody := &CreateURLRequest{"https://leetcode.com/problems/permutation-in-string/"}
+	_ = json.NewEncoder(&buf).Encode(requestBody)
+
+	resp, _ := http.Post(fmt.Sprintf("http://localhost:%d/url", port), "application/json", &buf)
+	var body CreateURLResponse
+	json.NewDecoder(resp.Body).Decode(&body)
+
+	// Act
+	userRequest := httpexpect.Default(t, fmt.Sprintf("http://localhost:%d", port))
+
+	userRequest.GET(fmt.Sprintf("/%s", body.ShortURL)).
+		Expect().
+		Status(http.StatusMovedPermanently).Header("Location").Contains(requestBody.URL)
+
+}
+
+type CreateURLRequest struct {
+	URL string `json:"URL"`
+}
+
+type CreateURLResponse struct {
+	ShortURL string `json:"shortURL"`
+}
+
 // func CreateConnString() string {
 // 	c := config.Init(os.Environ())
 // 	user, _ := c.GetDatabaseUser()
@@ -72,13 +118,4 @@ func TestCreateURL(t *testing.T) {
 
 // 	connString := fmt.Sprintf("postgresql://%s:%s@%s?sslmode=disable", user, pass, host)
 // 	return connString
-// }
-
-// func TestGetURL(t *testing.T) {
-// 	// Arrange
-
-// 	// Act
-
-// 	// Assert
-
 // }
