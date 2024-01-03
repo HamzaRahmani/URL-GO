@@ -58,7 +58,7 @@ func TestCreateURLHandler(t *testing.T) {
 	urlManager.On("CreateURL", "https://www.google.ca/").Return("urlGO", nil).Once()
 
 	var buf bytes.Buffer
-	err := json.NewEncoder(&buf).Encode(struct {
+	_ = json.NewEncoder(&buf).Encode(struct {
 		URL string `json:"url"`
 	}{
 		"https://www.google.ca/",
@@ -85,7 +85,30 @@ func TestCreateURLHandler(t *testing.T) {
 }
 
 func TestGetURLHandler(t *testing.T) {
+	// Arrange
+	urlManager := new(mockManager)
 
+	port, _ := tests.GetFreeTCPPort(t)
+	srv := server.NewHTTPServer(port, urlManager)
+	go func() { _ = srv.Start() }()
+	defer func() { _ = srv.Stop() }()
+	tests.WaitUntilBusyPort(port, t)
+
+	expectedURL := "https://www.google.ca/"
+	urlManager.On("GetURL", "xyzabcd").Return(expectedURL, nil).Once()
+
+	resp, err := http.Get(fmt.Sprintf("http://localhost:%d/%s", port, expectedURL))
+	if err != nil {
+		panic(err)
+	}
+
+	// Assert
+	givenURL, _ := resp.Location()
+	assert.Equal(t, resp.StatusCode, http.StatusMovedPermanently)
+	assert.NoError(t, err)
+	assert.Equal(t, expectedURL, givenURL, "URL does not match expected value")
+
+	urlManager.AssertExpectations(t)
 }
 
 type mockManager struct {
