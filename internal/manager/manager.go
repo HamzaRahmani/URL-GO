@@ -10,6 +10,7 @@ import (
 
 type Manager interface {
 	CreateURL(rawURL string) (string, error)
+	GetURL(hash string) (string, error)
 }
 
 type manager struct {
@@ -33,6 +34,10 @@ func (m *manager) CreateURL(originalURL string) (string, error) {
 	}
 
 	return row.Hash, nil
+}
+func (m *manager) GetURL(hash string) (string, error) {
+
+	return "", nil
 }
 
 func getMD5Hash(text string) string {
