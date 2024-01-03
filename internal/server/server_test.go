@@ -97,7 +97,7 @@ func TestGetURLHandler(t *testing.T) {
 	expectedURL := "https://www.google.ca/"
 	urlManager.On("GetURL", "xyzabcd").Return(expectedURL, nil).Once()
 
-	resp, err := http.Get(fmt.Sprintf("http://localhost:%d/%s", port, expectedURL))
+	resp, err := http.Get(fmt.Sprintf("http://localhost:%d/%s", port, "xyzabcd"))
 	if err != nil {
 		panic(err)
 	}
