@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net"
 	"net/http"
@@ -32,27 +33,27 @@ func NewHTTPServer(port int, manager manager.Manager) *HTTPServer {
 func NewRouter(m manager.Manager) *chi.Mux {
 	r := chi.NewRouter()
 
-	// r.Get("/info", func(w http.ResponseWriter, r *http.Request) {
-	// 	w.WriteHeader(http.StatusOK)
-	// 	w.Write([]byte("hello"))
-	// })
+	r.Get("/info", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("hello"))
+	})
 
-	// r.Post("/url", func(w http.ResponseWriter, r *http.Request) {
-	// 	var body createURLRequest
-	// 	err := json.NewDecoder(r.Body).Decode(&body)
-	// 	if err != nil {
-	// 		http.Error(w, fmt.Sprintf(http.StatusText(400), ": ", err), 400)
-	// 		return
-	// 	}
+	r.Post("/url", func(w http.ResponseWriter, r *http.Request) {
+		var body createURLRequest
+		err := json.NewDecoder(r.Body).Decode(&body)
+		if err != nil {
+			http.Error(w, fmt.Sprintf(http.StatusText(400), ": ", err), 400)
+			return
+		}
 
-	// 	shortURL, _ := m.CreateURL(body.URL)
+		shortURL, _ := m.CreateURL(body.URL)
 
-	// 	data := &responseBody{ShortURL: shortURL}
-	// 	w.Header().Set("Content-Type", "application/json")
-	// 	w.WriteHeader(http.StatusCreated)
-	// 	json.NewEncoder(w).Encode(data)
+		data := &responseBody{ShortURL: shortURL}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusCreated)
+		json.NewEncoder(w).Encode(data)
 
-	// })
+	})
 
 	r.Get("/{hash}", func(w http.ResponseWriter, r *http.Request) {
 		hash := chi.URLParam(r, "hash")
