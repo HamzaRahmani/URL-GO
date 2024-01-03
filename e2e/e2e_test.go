@@ -94,6 +94,7 @@ func TestGetURL(t *testing.T) {
 	json.NewDecoder(resp.Body).Decode(&body)
 
 	// Act
+	// TODO: rewrite expectations given new findings
 	userRequest := httpexpect.Default(t, fmt.Sprintf("http://localhost:%d", port))
 
 	userRequest.GET(fmt.Sprintf("/%s", body.ShortURL)).
