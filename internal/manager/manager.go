@@ -24,6 +24,8 @@ func NewManager(dB database.Database) *manager {
 }
 
 func (m *manager) CreateURL(originalURL string) (string, error) {
+	// TODO: validate that originalURL is actually a URL
+	// TODO: return error
 	md5 := getMD5Hash(originalURL)
 	hash := encodeToBase62(md5)[:7]
 
