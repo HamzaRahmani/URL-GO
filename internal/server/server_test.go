@@ -103,12 +103,10 @@ func TestGetURLHandler(t *testing.T) {
 	}
 
 	// Assert
-	resp.Request.Header.Get("Location")
 	location := resp.Request.Response.Header.Get("Location")
 	redirectStatusCode := resp.Request.Response.StatusCode
 	destinationURL := resp.Request.URL
 
-	assert.NoError(t, err)
 	assert.Equal(t, expectedURL, location, "Location header does not match expected value")
 	assert.Equal(t, http.StatusMovedPermanently, redirectStatusCode)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
