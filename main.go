@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	store, err := database.NewPostgresStore("postgres:gobank@localhost:5432/postgres")
+	store, err := database.NewPostgresStore("postgresql://postgres:gobank@localhost:5432/postgres")
 	if err != nil {
 		log.Fatal(err)
 	}
