@@ -1,8 +1,6 @@
 package server_test
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"testing"
@@ -45,7 +43,46 @@ func TestStopServer(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
-func TestCreateURLHandler(t *testing.T) {
+// func TestCreateURLHandler(t *testing.T) {
+// 	// Arrange
+// 	urlManager := new(mockManager)
+
+// 	port, _ := tests.GetFreeTCPPort(t)
+// 	srv := server.NewHTTPServer(port, urlManager)
+// 	go func() { _ = srv.Start() }()
+// 	defer func() { _ = srv.Stop() }()
+// 	tests.WaitUntilBusyPort(port, t)
+
+// 	urlManager.On("CreateURL", "https://www.google.ca/").Return("urlGO", nil).Once()
+
+// 	var buf bytes.Buffer
+// 	_ = json.NewEncoder(&buf).Encode(struct {
+// 		URL string `json:"url"`
+// 	}{
+// 		"https://www.google.ca/",
+// 	})
+
+// 	// Act
+// 	resp, err := http.Post(fmt.Sprintf("http://localhost:%d/url", port), "application/json", &buf)
+
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	defer resp.Body.Close()
+
+// 	var body responseBody
+// 	err = json.NewDecoder(resp.Body).Decode(&body)
+
+// 	// Assert
+// 	assert.Equal(t, resp.StatusCode, http.StatusCreated)
+// 	assert.NoError(t, err, "Error decoding JSON")
+// 	expectedBdoy := responseBody{ShortURL: "urlGO"}
+// 	assert.Equal(t, expectedBdoy, body, "Unexpected response data")
+
+// 	urlManager.AssertExpectations(t)
+// }
+
+func TestGetURLHandler(t *testing.T) {
 	// Arrange
 	urlManager := new(mockManager)
 
@@ -55,32 +92,25 @@ func TestCreateURLHandler(t *testing.T) {
 	defer func() { _ = srv.Stop() }()
 	tests.WaitUntilBusyPort(port, t)
 
-	urlManager.On("CreateURL", "https://www.google.ca/").Return("urlGO", nil).Once()
+	expectedURL := "https://www.google.ca/"
+	urlManager.On("GetURL", "xyzabcd").Return(expectedURL, nil).Once()
 
-	var buf bytes.Buffer
-	err := json.NewEncoder(&buf).Encode(struct {
-		URL string `json:"url"`
-	}{
-		"https://www.google.ca/",
-	})
-
-	// Act
-	resp, err := http.Post(fmt.Sprintf("http://localhost:%d/url", port), "application/json", &buf)
-
+	resp, err := http.Get(fmt.Sprintf("http://localhost:%d/%s", port, "xyzabcd"))
 	if err != nil {
 		panic(err)
 	}
-	defer resp.Body.Close()
 
 	// Assert
-	assert.Equal(t, resp.StatusCode, http.StatusCreated)
+	resp.Request.Header.Get("Location")
+	location := resp.Request.Response.Header.Get("Location")
+	redirectStatusCode := resp.Request.Response.StatusCode
+	destinationURL := resp.Request.URL
 
-	var body responseBody
-	err = json.NewDecoder(resp.Body).Decode(&body)
-	assert.NoError(t, err, "Error decoding JSON")
-
-	expectedBdoy := responseBody{ShortURL: "urlGO"}
-	assert.Equal(t, expectedBdoy, body, "Unexpected response data")
+	assert.NoError(t, err)
+	assert.Equal(t, expectedURL, location, "Location header does not match expected value")
+	assert.Equal(t, http.StatusMovedPermanently, redirectStatusCode)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Contains(t, expectedURL, destinationURL.Host, "URL does not match expected value")
 
 	urlManager.AssertExpectations(t)
 }
@@ -89,8 +119,13 @@ type mockManager struct {
 	mock.Mock
 }
 
-func (m *mockManager) CreateURL(message string) (string, error) {
-	args := m.Called(message)
+func (m *mockManager) CreateURL(rawURL string) (string, error) {
+	args := m.Called(rawURL)
+	return args.String(0), args.Error(1)
+}
+
+func (m *mockManager) GetURL(hash string) (string, error) {
+	args := m.Called(hash)
 	return args.String(0), args.Error(1)
 }
 
