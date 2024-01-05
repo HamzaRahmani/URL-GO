@@ -44,7 +44,7 @@ func TestGetURL(t *testing.T) {
 	// Arrange
 	db := new(mockDatabase)
 	db.On(
-		"GetURL",
+		"FindURL",
 		mock.AnythingOfType("string"),
 	).Return(database.URL{Hash: hash, OriginalURL: "https://www.google.ca"}, nil).Once()
 
@@ -86,7 +86,7 @@ func (m *mockDatabase) InsertURL(hash string, originalURL string) (database.URL,
 	return args.Get(0).(database.URL), args.Error(1)
 }
 
-func (m *mockDatabase) GetURL(hash string) (database.URL, error) {
+func (m *mockDatabase) FindURL(hash string) (database.URL, error) {
 	args := m.Called(hash)
 	return args.Get(0).(database.URL), args.Error(1)
 }
