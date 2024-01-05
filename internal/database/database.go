@@ -12,7 +12,7 @@ import (
 
 type Database interface {
 	InsertURL(hash string, originalURL string) (URL, error)
-	// GetURL(hashedURL string) error
+	GetURL(hash string) (URL, error)
 	// DeleteURL(hashedURL string) error
 }
 
@@ -74,8 +74,8 @@ func (s PostgresStore) InsertURL(hash string, originalURL string) (URL, error) {
 	return row, err
 }
 
-func (s PostgresStore) GetURL(hashedURL string) (string, error) {
-	return "", nil
+func (s PostgresStore) GetURL(hashedURL string) (URL, error) {
+	return URL{}, nil
 }
 
 func (s PostgresStore) DeleteURL(hashedURL string) error {
