@@ -78,7 +78,7 @@ func TestCreateURLHandler(t *testing.T) {
 	// Assert
 	assert.Equal(t, resp.StatusCode, http.StatusCreated)
 	assert.NoError(t, err, "Error decoding JSON")
-	expectedBdoy := responseBody{ShortURL: "urlGO"}
+	expectedBdoy := responseBody{Hash: "urlGO"}
 	assert.Equal(t, expectedBdoy, body, "Unexpected response data")
 
 	urlManager.AssertExpectations(t)
@@ -115,6 +115,35 @@ func TestGetURLHandler(t *testing.T) {
 	urlManager.AssertExpectations(t)
 }
 
+func TestURLValidator(t *testing.T) {
+	// Arrange
+	urlManager := new(mockManager)
+
+	port, _ := tests.GetFreeTCPPort(t)
+	srv := server.NewHTTPServer(port, urlManager)
+	go func() { _ = srv.Start() }()
+	defer func() { _ = srv.Stop() }()
+	tests.WaitUntilBusyPort(port, t)
+
+	var buf bytes.Buffer
+	_ = json.NewEncoder(&buf).Encode(struct {
+		URL string `json:"url"`
+	}{
+		"https://www.googl`/.ca/",
+	})
+
+	// Act
+	resp, err := http.Post(fmt.Sprintf("http://localhost:%d/url", port), "application/json", &buf)
+
+	if err != nil {
+		panic(err)
+	}
+
+	// Assert
+	assert.Equal(t, resp.StatusCode, http.StatusBadRequest)
+	urlManager.AssertExpectations(t)
+}
+
 type mockManager struct {
 	mock.Mock
 }
@@ -131,5 +160,5 @@ func (m *mockManager) GetURL(hash string) (string, error) {
 
 // ResponseBody represents the structure of the expected JSON response.
 type responseBody struct {
-	ShortURL string `json:"shortURL"`
+	Hash string `json:"hash"`
 }
