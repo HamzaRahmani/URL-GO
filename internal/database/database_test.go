@@ -73,4 +73,5 @@ func TestFindURL(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, row)
 	assert.NotEmpty(t, row.OriginalURL)
+	assert.NotEmpty(t, row.CreatedAt)
 }
