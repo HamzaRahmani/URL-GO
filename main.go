@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
+	// TODO: create a bootstrap function that starts the server, pass config into it from main
 	store, err := database.NewPostgresStore("postgresql://postgres:gobank@localhost:5432/postgres")
 	if err != nil {
 		log.Fatal(err)
