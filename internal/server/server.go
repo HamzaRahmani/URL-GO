@@ -7,6 +7,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"regexp"
 	"strconv"
 	"time"
 
@@ -40,7 +41,6 @@ func NewRouter(m manager.Manager) *chi.Mux {
 	})
 
 	r.Post("/url", func(w http.ResponseWriter, r *http.Request) {
-		// TODO: validate that originalURL is actually a URL
 		var body createURLRequest
 		err := json.NewDecoder(r.Body).Decode(&body)
 		if err != nil {
@@ -48,9 +48,14 @@ func NewRouter(m manager.Manager) *chi.Mux {
 			return
 		}
 
-		shortURL, _ := m.CreateURL(body.URL)
+		if !isURL(body.URL) {
+			http.Error(w, fmt.Sprintf("%s input was not a URL", http.StatusText(400)), 400)
+			return
+		}
 
-		data := &responseBody{ShortURL: shortURL}
+		hash, _ := m.CreateURL(body.URL)
+
+		data := &responseBody{Hash: hash}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
 		json.NewEncoder(w).Encode(data)
@@ -59,7 +64,11 @@ func NewRouter(m manager.Manager) *chi.Mux {
 
 	r.Get("/{hash}", func(w http.ResponseWriter, r *http.Request) {
 		hash := chi.URLParam(r, "hash")
-		// TODO: validate that hash is 7 characters
+
+		if !isValidLength(hash) {
+			http.Error(w, fmt.Sprintf("%s: not a valid hash", http.StatusText(400)), 400)
+			return
+		}
 
 		originalURL, err := m.GetURL(hash)
 		if err != nil {
@@ -74,12 +83,21 @@ func NewRouter(m manager.Manager) *chi.Mux {
 	return r
 }
 
+func isURL(input string) bool {
+	urlRegex := regexp.MustCompile(`^(http|https):\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}(\/\S*)?$`)
+	return urlRegex.MatchString(input)
+}
+
+func isValidLength(input string) bool {
+	return len(input) == 7
+}
+
 type createURLRequest struct {
 	URL string `json:"url"`
 }
 
 type responseBody struct {
-	ShortURL string `json:"shortURL"`
+	Hash string `json:"hash"`
 }
 
 // Start starts the HTTP server.
