@@ -23,7 +23,7 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func TestCreateURL(t *testing.T) {
+func TestInsertURL(t *testing.T) {
 	// Arrange
 	db, err := database.NewPostgresStore(
 		fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable",
@@ -46,4 +46,31 @@ func TestCreateURL(t *testing.T) {
 	// Assert
 	assert.NoError(t, err)
 	assert.NotNil(t, row)
+	assert.NotEmpty(t, row.CreatedAt)
+}
+
+func TestFindURL(t *testing.T) {
+	// Arrange
+	db, err := database.NewPostgresStore(
+		fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable",
+			tests.DbUser,
+			tests.DbPass,
+			testDbAddress,
+			tests.DbName),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Act
+	var row database.URL
+	row, err = db.FindURL("abcdefg")
+	if err != nil {
+		t.Errorf("error was not expected while updating: %s", err)
+	}
+
+	// Assert
+	assert.NoError(t, err)
+	assert.NotNil(t, row)
+	assert.NotEmpty(t, row.OriginalURL)
 }
