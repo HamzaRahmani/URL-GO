@@ -37,7 +37,27 @@ func TestCreateURL(t *testing.T) {
 	db.AssertExpectations(t)
 }
 
-func TestFindURL(t *testing.T) {
+func TestGetURL(t *testing.T) {
+	t.Parallel()
+	hash := "abcdefg"
+
+	// Arrange
+	db := new(mockDatabase)
+	db.On(
+		"FindURL",
+		mock.AnythingOfType("string"),
+	).Return(database.URL{Hash: hash, OriginalURL: "https://www.google.ca"}, nil).Once()
+
+	m := manager.NewManager(db)
+
+	// Act
+	retrievedURL, err := m.GetURL(hash)
+
+	// Assert
+	assert.NoError(t, err)
+	assert.NotEmpty(t, retrievedURL)
+
+	db.AssertExpectations(t)
 
 }
 
@@ -63,5 +83,10 @@ type mockDatabase struct {
 // CreateURL implements database.Database.
 func (m *mockDatabase) InsertURL(hash string, originalURL string) (database.URL, error) {
 	args := m.Called(hash, originalURL)
+	return args.Get(0).(database.URL), args.Error(1)
+}
+
+func (m *mockDatabase) FindURL(hash string) (database.URL, error) {
+	args := m.Called(hash)
 	return args.Get(0).(database.URL), args.Error(1)
 }

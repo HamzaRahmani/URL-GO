@@ -39,6 +39,7 @@ func NewRouter(m manager.Manager) *chi.Mux {
 	})
 
 	r.Post("/url", func(w http.ResponseWriter, r *http.Request) {
+		// TODO: validate that originalURL is actually a URL
 		var body createURLRequest
 		err := json.NewDecoder(r.Body).Decode(&body)
 		if err != nil {
@@ -57,6 +58,7 @@ func NewRouter(m manager.Manager) *chi.Mux {
 
 	r.Get("/{hash}", func(w http.ResponseWriter, r *http.Request) {
 		hash := chi.URLParam(r, "hash")
+		// TODO: validate that hash is 7 characters
 
 		originalURL, err := m.GetURL(hash)
 		if err != nil {

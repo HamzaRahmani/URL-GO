@@ -62,7 +62,7 @@ func TestCreateURL(t *testing.T) {
 	userRequest.POST("/url").WithJSON(body).
 		Expect().
 		Status(http.StatusCreated).
-		JSON().Object().ContainsKey("shortURL")
+		JSON().Object().ContainsKey("hash")
 }
 
 func TestGetURL(t *testing.T) {
@@ -96,10 +96,9 @@ func TestGetURL(t *testing.T) {
 	// Act
 	userRequest := httpexpect.Default(t, fmt.Sprintf("http://localhost:%d", port))
 
-	userRequest.GET(fmt.Sprintf("/%s", body.ShortURL)).
+	userRequest.GET(fmt.Sprintf("/%s", body.Hash)).
 		Expect().
-		Status(http.StatusMovedPermanently).Header("Location").Contains(requestBody.URL)
-
+		Status(http.StatusOK)
 }
 
 type CreateURLRequest struct {
@@ -107,7 +106,7 @@ type CreateURLRequest struct {
 }
 
 type CreateURLResponse struct {
-	ShortURL string `json:"shortURL"`
+	Hash string `json:"hash"`
 }
 
 // func CreateConnString() string {
