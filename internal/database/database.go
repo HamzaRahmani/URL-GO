@@ -35,7 +35,7 @@ func NewPostgresStore(connString string) (*PostgresStore, error) {
 
 	return &PostgresStore{
 		db: dbpool,
-	}, nil
+	}, err
 }
 
 func (s *PostgresStore) Init() error {

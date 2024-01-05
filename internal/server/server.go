@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net"
 	"net/http"
 	"strconv"
@@ -85,9 +86,9 @@ type responseBody struct {
 func (h *HTTPServer) Start() error {
 	l, err := net.Listen("tcp4", h.server.Addr)
 	if err != nil {
-		return err
+		panic(err)
 	}
-
+	log.Printf("Listening at: %s", h.server.Addr)
 	go func() { err = h.server.Serve(l) }()
 	return err
 }
