@@ -42,3 +42,8 @@ To generate a short URL, we will
 
 - Base 62 encode the MD5 hash and take the first 7 characters
   - This results in 62^7 possible values, should easily be able to handle whatever is thrown at us.
+
+## TODOs
+
+- Give users the ability to customize URLs
+- On the frontend, store the URLs created by the user in local storage
