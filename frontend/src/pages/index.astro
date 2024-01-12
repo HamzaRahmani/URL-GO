@@ -1,12 +1,16 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import URLForm from "../components/URLForm";
 ---
 
 <Layout title="URL-GO">
-  <main class="flex justify-center items-center">
-    <h1 class="text-7xl text-white/80 text-center font-bold pt-8">
+  <main class="flex flex-wrap justify-center items-center">
+    <h1 class="basis-full text-7xl text-white/80 text-center font-bold pt-8">
       Welcome to <span class="text-indigo-400">URL-GO</span>
     </h1>
+    <div class="my-20">
+      <URLForm client:load />
+    </div>
   </main>
 </Layout>
 
