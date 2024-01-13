@@ -1,0 +1,173 @@
+---
+import Layout from "../layouts/Layout.astro";
+import URLForm from "../components/URLForm";
+---
+
+<Layout title="URL-GO">
+  <main class="flex flex-wrap justify-center relative bg-black dark">
+    <div class="z-10 flex flex-wrap justify-center">
+      <h1 class="basis-full text-5xl text-center font-bold font-mono mt-32">
+        <span class="text-white/80"> Welcome to</span>
+        <span class="text-blue-500">URL-GO</span>
+      </h1>
+      <div class="card my-40 p-10">
+        <div class="card-border">
+          <div class="gradient"></div>
+        </div>
+        <div class="card-shadow">
+          <div class="gradient"></div>
+        </div>
+        <URLForm client:load />
+      </div>
+    </div>
+    <div class="h-[100vh] absolute inset-0 overflow-hidden z-0">
+      <div class="rays absolute -inset-[10px] opacity-50 z-0"></div>
+    </div>
+  </main>
+
+  <style>
+    /* Background */
+    @keyframes rays {
+      from {
+        background-position:
+          50% 50%,
+          50% 50%;
+      }
+      to {
+        background-position:
+          350% 50%,
+          350% 50%;
+      }
+    }
+
+    .rays {
+      --stripes: repeating-linear-gradient(
+        100deg,
+        #fff 0%,
+        #fff 7%,
+        transparent 10%,
+        transparent 12%,
+        #fff 16%
+      );
+      --stripesDark: repeating-linear-gradient(
+        100deg,
+        #000 0%,
+        #000 7%,
+        transparent 10%,
+        transparent 12%,
+        #000 16%
+      );
+      --rainbow: repeating-linear-gradient(
+        100deg,
+        #60a5fa 10%,
+        #e879f9 15%,
+        #60a5fa 20%,
+        #5eead4 25%,
+        #60a5fa 30%
+      );
+      background-image: var(--stripes), var(--rainbow);
+      background-size: 300%, 200%;
+      background-position:
+        50% 50%,
+        50% 50%;
+
+      filter: blur(10px) invert(100%);
+
+      mask-image: radial-gradient(
+        ellipse at 100% 0%,
+        black 40%,
+        transparent 70%
+      );
+
+      pointer-events: none;
+    }
+
+    .rays::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: var(--stripes), var(--rainbow);
+      background-size: 200%, 100%;
+      animation: rays 60s linear infinite;
+      background-attachment: fixed;
+      mix-blend-mode: difference;
+    }
+
+    .dark .rays {
+      background-image: var(--stripesDark), var(--rainbow);
+      filter: blur(10px) opacity(50%) saturate(200%);
+    }
+    .dark .rays::after {
+      background-image: var(--stripesDark), var(--rainbow);
+    }
+
+    /* Card */
+
+    :root {
+      --c1: #000000;
+      --c2: #60a5fa;
+      --c3: #e879f9;
+      --c4: #60a5fa;
+      --c5: #5eead4;
+      --c6: #60a5fa;
+
+      --gradient: conic-gradient(
+        var(--c1),
+        var(--c1),
+        var(--c2),
+        var(--c3),
+        var(--c4),
+        var(--c5),
+        var(--c6),
+        var(--c1),
+        var(--c1),
+        var(--c6),
+        var(--c5),
+        var(--c4),
+        var(--c3),
+        var(--c2),
+        var(--c1),
+        var(--c1)
+      );
+    }
+
+    .card {
+      border-radius: 0.5rem;
+      background-color: var(--c1);
+      position: relative;
+    }
+    .card-border,
+    .card-shadow {
+      position: absolute;
+      inset: -8px;
+      z-index: -1;
+      border-radius: calc(0.5rem + 8px);
+      container-type: size;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .card-shadow {
+      filter: blur(4.5rem);
+      opacity: 0.75;
+    }
+    .gradient {
+      position: absolute;
+      width: 140cqmax;
+      height: 140cqmax;
+      background-image: var(--gradient);
+      border-radius: 50%;
+      animation-name: rotate;
+      animation-duration: 3s;
+      animation-iteration-count: infinite;
+      animation-timing-function: linear;
+    }
+
+    @keyframes rotate {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</Layout>
