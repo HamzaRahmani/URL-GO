@@ -1,31 +1,3 @@
-:root {
-  --c1: #000000;
-  --c2: #60a5fa;
-  --c3: #e879f9;
-  --c4: #60a5fa;
-  --c5: #5eead4;
-  --c6: #60a5fa;
-
-  --gradient: conic-gradient(
-    var(--c1),
-    var(--c1),
-    var(--c2),
-    var(--c3),
-    var(--c4),
-    var(--c5),
-    var(--c6),
-    var(--c1),
-    var(--c1),
-    var(--c6),
-    var(--c5),
-    var(--c4),
-    var(--c3),
-    var(--c2),
-    var(--c1),
-    var(--c1)
-  );
-}
-
 .button {
   font-family: ui-monospace, Consolas;
   position: relative;
