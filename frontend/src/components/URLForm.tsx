@@ -1,4 +1,5 @@
 import { type FormEvent, useState } from "react";
+import Button from "./Button.tsx";
 
 export default function Form() {
   const [responseMessage, setResponseMessage] = useState("");
@@ -39,9 +40,10 @@ export default function Form() {
   return (
     // TODO: Move to a new component
     // TODO: When successful render a component with short URL + copy option
-    <form onSubmit={submit}>
-      <label>Enter a URL</label>
+    <form onSubmit={submit} className="flex flex-col">
+      <label className="text-cyan-50">Shorten a long URL</label>
       <input
+        className="rounded-lg h-10 w-96 text-left pl-1 my-4"
         onChange={handleChange}
         value={url}
         type="url"
@@ -50,7 +52,9 @@ export default function Form() {
         autoComplete="url"
         required
       />
-      <button>Send</button>
+      <Button>
+        <p className="font-semibold font-mono">Send it yo</p>
+      </Button>
       {responseMessage && <p>{responseMessage}</p>}
     </form>
   );
