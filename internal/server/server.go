@@ -13,6 +13,8 @@ import (
 
 	"github.com/HamzaRahmani/urlShortner/internal/manager"
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
 )
 
 // HTTPServer represents a new HTTP server
@@ -35,6 +37,16 @@ func NewHTTPServer(port int, manager manager.Manager) *HTTPServer {
 func NewRouter(m manager.Manager) *chi.Mux {
 	r := chi.NewRouter()
 
+	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
+	r.Use(cors.Handler(cors.Options{
+		AllowedOrigins:   []string{"https://*", "http://*"},
+		AllowedMethods:   []string{"GET", "POST", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Content-Type"},
+		AllowCredentials: false,
+		MaxAge:           300,
+	}))
+
 	r.Get("/info", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("hello"))
@@ -49,11 +61,16 @@ func NewRouter(m manager.Manager) *chi.Mux {
 		}
 
 		if !isURL(body.URL) {
-			http.Error(w, fmt.Sprintf("%s input was not a URL", http.StatusText(400)), 400)
+			http.Error(w, fmt.Sprintf("%s: input was not a URL", http.StatusText(400)), 400)
 			return
 		}
 
-		hash, _ := m.CreateURL(body.URL)
+		hash, err := m.CreateURL(body.URL)
+
+		if err != nil {
+			http.Error(w, fmt.Sprintf("%s: failed to shorten URL", http.StatusText(500)), 500)
+			return
+		}
 
 		data := &responseBody{Hash: hash}
 		w.Header().Set("Content-Type", "application/json")

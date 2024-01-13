@@ -68,7 +68,6 @@ func (s PostgresStore) InsertURL(hash string, originalURL string) (URL, error) {
 		Scan(&row.Hash, &row.OriginalURL, &row.CreatedAt)
 	if err != nil {
 		log.Fatalf("Failed to insert URL: %s", err)
-
 	}
 
 	return row, err
