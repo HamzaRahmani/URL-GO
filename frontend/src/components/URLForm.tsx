@@ -7,6 +7,7 @@ export default function Form() {
   function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
+    // TODO: load url from env
     fetch("http://localhost:5050/url", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -36,6 +37,8 @@ export default function Form() {
   };
 
   return (
+    // TODO: Move to a new component
+    // TODO: When successful render a component with short URL + copy option
     <form onSubmit={submit}>
       <label>Enter a URL</label>
       <input
