@@ -18,8 +18,8 @@ export default function Form() {
         if (response.ok) {
           const data = await response.json();
           console.log(data);
-          if (data.message) {
-            setResponseMessage(data.message);
+          if (data.hash) {
+            setResponseMessage(data.hash);
           }
           return;
         }
