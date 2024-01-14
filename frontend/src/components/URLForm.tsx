@@ -63,23 +63,21 @@ export default function Form() {
           autoComplete="off"
           required
         />
+
         {!shortUrl && (
           <Button>
-            <p className="font-semibold font-mono px-2">Send it yo</p>
+            <p className="font-semibold font-mono">Send it yo</p>
           </Button>
         )}
       </form>
       {shortUrl && (
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center">
           <Button onClick={copyURL}>
-            <p className="font-semibold font-mono text-center px-2">
-              Copy it yo
-            </p>
+            <p className="font-semibold font-mono text-center">Copy it yo</p>
           </Button>
+          <div className="mt-5 h-14 bg-gradient-to-t from-transparent from-0% via-violet-300 via-50% to-transparent to-100% w-0.5"></div>
           <Button onClick={resetForm}>
-            <p className="font-semibold font-mono text-center px-2">
-              Another Go
-            </p>
+            <p className="font-semibold font-mono text-center">Another Go</p>
           </Button>
         </div>
       )}
