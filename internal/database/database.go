@@ -67,8 +67,10 @@ func (s PostgresStore) InsertURL(hash string, originalURL string) (URL, error) {
 	err := s.db.QueryRow(context.Background(), query, hash, originalURL).
 		Scan(&row.Hash, &row.OriginalURL, &row.CreatedAt)
 	if err != nil {
-		log.Fatalf("Failed to insert URL: %s", err)
+		log.Fatalf("Failed to insert URL: %s - hash: %s - url: %s", err, hash, originalURL)
 	}
+
+	log.Printf("Created new row - hash: %s - url: %s", hash, originalURL)
 
 	return row, err
 }
@@ -83,7 +85,7 @@ func (s PostgresStore) FindURL(hash string) (URL, error) {
 	err := s.db.QueryRow(context.Background(), query, hash).
 		Scan(&row.Hash, &row.OriginalURL, &row.CreatedAt)
 	if err != nil {
-		log.Fatalf("Failed to find hash: %s", err)
+		log.Printf("Failed to find row: %s - hash: %s", err, hash)
 	}
 	return row, err
 }

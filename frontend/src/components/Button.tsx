@@ -8,8 +8,9 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 const Button: React.FC<ButtonProps> = (props) => {
   const { children, ...rest } = props;
+
   return (
-    <button className="button my-5">
+    <button className="button mt-5 py-2" onClick={props.onClick}>
       <span></span> <span></span> <span></span>
       <span></span>
       {children}
