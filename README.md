@@ -47,3 +47,4 @@ To generate a short URL, we will
 
 - Give users the ability to customize URLs
 - On the frontend, store the URLs created by the user in local storage
+- Add analytics service
