@@ -60,6 +60,7 @@ export default function Form() {
           type="url"
           id="url"
           name="url"
+          autoComplete="off"
           required
         />
         {!shortUrl && (
