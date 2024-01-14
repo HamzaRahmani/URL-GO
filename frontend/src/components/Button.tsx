@@ -1,10 +1,8 @@
 import React, { type ButtonHTMLAttributes, type ReactNode } from "react";
 import "../styles/Button.css";
 
-// Define props for the Button component
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  // Add any additional custom props if needed
-  children: ReactNode; // Make children required
+  children: ReactNode;
 }
 const Button: React.FC<ButtonProps> = (props) => {
   const { children, ...rest } = props;
