@@ -62,7 +62,7 @@ export default function Form() {
           name="url"
           autoComplete="off"
           required
-          placeholder="https://example.com"
+          placeholder="https://www.example.com"
         />
 
         {!shortUrl && (
