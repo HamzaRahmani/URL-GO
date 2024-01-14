@@ -54,7 +54,7 @@ export default function Form() {
           Shorten a long URL
         </label>
         <input
-          className="rounded-lg h-10 w-96 text-left pl-1 mt-4 mb-6"
+          className="rounded-lg h-16 w-96 text-left pl-4 mt-4 mb-6 bg-slate-900 border-2 text-slate-50"
           onChange={handleChange}
           value={shortUrl || url}
           type="url"
@@ -62,6 +62,7 @@ export default function Form() {
           name="url"
           autoComplete="off"
           required
+          placeholder="https://example.com"
         />
 
         {!shortUrl && (
