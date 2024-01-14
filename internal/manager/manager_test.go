@@ -1,6 +1,7 @@
 package manager_test
 
 import (
+	"errors"
 	"regexp"
 	"strings"
 	"testing"
@@ -17,6 +18,10 @@ func TestCreateURL(t *testing.T) {
 
 	// Arrange
 	db := new(mockDatabase)
+	db.On(
+		"FindURL",
+		mock.AnythingOfType("string"),
+	).Return(database.URL{}, errors.New("some error")).Once()
 	db.On(
 		"InsertURL",
 		mock.AnythingOfType("string"),
