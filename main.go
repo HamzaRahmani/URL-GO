@@ -59,6 +59,3 @@ func initializeApp() (*server.HTTPServer, error) {
 
 	return srv, err
 }
-
-postgresql://postgres:DbF14ab-C4b5F46B5EAdd3ecaGgB43G6@postgres.railway.internal:5432/railway
-PGDATABASE.
