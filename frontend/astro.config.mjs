@@ -12,4 +12,11 @@ export default defineConfig({
       destination: "/app",
     },
   },
+  output: "hybrid",
+  adapter: node({
+    mode: "standalone",
+  }),
+  server: {
+    host: "0.0.0.0",
+  },
 });
