@@ -32,8 +32,8 @@ func (c Config) GetDatabaseHost() (string, error) {
 }
 
 func (c Config) GetDatabaseUser() (string, error) {
-	host := c.env["DATABASE_USER"]
-	return host, nil
+	user := c.env["DATABASE_USER"]
+	return user, nil
 }
 
 func (c Config) GetDatabasePassword() (string, error) {

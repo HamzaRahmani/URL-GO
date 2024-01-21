@@ -44,7 +44,27 @@ To generate a short URL, we will
   - This results in 62^7 possible values, should easily be able to handle whatever is thrown at us.
 
 ## Roadmap
+
 - [ ] Add Changelog
 - [ ] Give users the ability to customize URLs
 - [ ] On the frontend, store the URLs created by the user in local storage for easy retrieval
 - [ ] Add analytics service
+
+## Getting Started
+
+For the frontend, create a .env file in /frontend and set PUBLIC_URLAPI=localhost:[port].
+Then simply `npm install` and `npm run dev`.
+
+For the backend, run `go mod download && go mod verify` and then `go run main.go` in the root directory. You will need to set env variables referenced in the config layer.
+
+## Snippets
+
+Docker build commands
+
+```shell
+docker build -t backend:latest . \
+  --build-arg PORT=$LISTENING_PORT \
+  --build-arg DB_HOST=$DATABASE_HOST \
+  --build-arg DB_USER=$DATABASE_USER
+  --build-arg DB_PASS=$DATABASE_PASSWORD
+```

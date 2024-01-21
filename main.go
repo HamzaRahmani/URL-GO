@@ -49,6 +49,7 @@ func initializeApp() (*server.HTTPServer, error) {
 	connString := fmt.Sprintf("postgresql://%s:%s@%s", dbUser, dbPass, dbHost)
 
 	db, err := database.NewPostgresStore(connString)
+	db.Init()
 
 	if err != nil {
 		log.Printf("Failed to connect to db: %s", connString)

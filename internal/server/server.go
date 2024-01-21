@@ -26,7 +26,7 @@ type HTTPServer struct {
 func NewHTTPServer(port int, manager manager.Manager) *HTTPServer {
 	return &HTTPServer{
 		&http.Server{
-			Addr:              "localhost:" + strconv.Itoa(port),
+			Addr:              "0.0.0.0:" + strconv.Itoa(port),
 			Handler:           NewRouter(manager),
 			ReadHeaderTimeout: 3 * time.Second,
 		},

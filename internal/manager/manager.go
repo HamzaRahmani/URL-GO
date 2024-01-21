@@ -2,7 +2,6 @@ package manager
 
 import (
 	"crypto/md5"
-	"encoding/hex"
 	"math/big"
 
 	"github.com/HamzaRahmani/urlShortner/internal/database"
@@ -45,13 +44,13 @@ func (m *manager) GetURL(hash string) (string, error) {
 	return row.OriginalURL, err
 }
 
-func getMD5Hash(text string) string {
+func getMD5Hash(text string) []byte {
 	hasher := md5.New()
 	hasher.Write([]byte(text))
-	return hex.EncodeToString(hasher.Sum(nil))
+	return hasher.Sum(nil)
 }
 
-func encodeToBase62(text string) string {
+func encodeToBase62(text []byte) string {
 	var i big.Int
 	i.SetBytes([]byte(text))
 	return i.Text(62)
