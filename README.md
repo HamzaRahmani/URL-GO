@@ -65,6 +65,6 @@ Docker build commands
 docker build -t backend:latest . \
   --build-arg PORT=$LISTENING_PORT \
   --build-arg DB_HOST=$DATABASE_HOST \
-  --build-arg DB_USER=$DATABASE_USER
+  --build-arg DB_USER=$DATABASE_USER \
   --build-arg DB_PASS=$DATABASE_PASSWORD
 ```
