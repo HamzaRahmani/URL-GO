@@ -66,13 +66,13 @@ export default function Form() {
         />
 
         {!shortUrl && (
-          <Button>
+          <Button className="mx-4">
             <p className="font-semibold font-mono">Send it yo</p>
           </Button>
         )}
       </form>
       {shortUrl && (
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center mx-4">
           <Button onClick={copyURL}>
             <p className="font-semibold font-mono text-center">Copy it yo</p>
           </Button>
