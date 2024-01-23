@@ -50,11 +50,11 @@ export default function Form() {
     // TODO: Break down into smaller components
     <>
       <form onSubmit={submit} className="flex flex-col">
-        <label className="text-cyan-50 font-light font-mono pt-2">
+        <label className="text-cyan-50 font-light font-mono pt-2 mx-4">
           Shorten a long URL
         </label>
         <input
-          className="rounded-lg h-16 w-96 text-left pl-4 mt-4 mb-6 bg-slate-900 border-2 text-slate-50"
+          className="rounded-lg h-16 w-64 sm:w-96 text-left pl-4 mt-4 mb-6 mx-4 bg-slate-900 border-2 text-slate-50"
           onChange={handleChange}
           value={shortUrl || url}
           type="url"
