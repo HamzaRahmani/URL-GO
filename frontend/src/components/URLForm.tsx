@@ -48,13 +48,16 @@ export default function Form() {
 
   return (
     // TODO: Break down into smaller components
-    <>
-      <form onSubmit={submit} className="flex flex-col">
-        <label className="text-cyan-50 font-light font-mono pt-2 mx-4">
+    <div className="flex flex-col justify-start items-center h-full">
+      <form
+        onSubmit={submit}
+        className="flex flex-col justify-evenly items-center h-full w-5/6"
+      >
+        <label className="text-cyan-50 font-light font-mono pt-2 ml-0 w-5/6">
           Shorten a long URL
         </label>
         <input
-          className="rounded-lg h-16 w-64 sm:w-96 text-left pl-4 mt-4 mb-6 mx-4 bg-slate-900 border-2 text-slate-50"
+          className="rounded-lg bg-slate-900 border-2 text-slate-50 h-16 pl-4 w-5/6"
           onChange={handleChange}
           value={shortUrl || url}
           type="url"
@@ -66,22 +69,22 @@ export default function Form() {
         />
 
         {!shortUrl && (
-          <Button className="mx-4">
+          <Button className="w-5/6">
             <p className="font-semibold font-mono">Send it yo</p>
           </Button>
         )}
+        {shortUrl && (
+          <div className="flex justify-between items-center w-5/6">
+            <Button onClick={copyURL}>
+              <p className="font-semibold font-mono text-center">Copy it yo</p>
+            </Button>
+            <div className="bg-gradient-to-t from-transparent from-0% via-violet-300 via-50% to-transparent to-100% w-0.5 mt-5 h-14"></div>
+            <Button onClick={resetForm}>
+              <p className="font-semibold font-mono text-center">Another Go</p>
+            </Button>
+          </div>
+        )}
       </form>
-      {shortUrl && (
-        <div className="flex justify-between items-center mx-4">
-          <Button onClick={copyURL}>
-            <p className="font-semibold font-mono text-center">Copy it yo</p>
-          </Button>
-          <div className="mt-5 h-14 bg-gradient-to-t from-transparent from-0% via-violet-300 via-50% to-transparent to-100% w-0.5"></div>
-          <Button onClick={resetForm}>
-            <p className="font-semibold font-mono text-center">Another Go</p>
-          </Button>
-        </div>
-      )}
-    </>
+    </div>
   );
 }
