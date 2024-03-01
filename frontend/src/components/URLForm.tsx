@@ -70,17 +70,23 @@ export default function Form() {
 
         {!shortUrl && (
           <Button className="w-5/6">
-            <p className="font-semibold font-mono">Send it yo</p>
+            <p className="font-semibold text-lg md:text-2xl font-mono">
+              Send it yo
+            </p>
           </Button>
         )}
         {shortUrl && (
           <div className="flex justify-between items-center w-5/6">
             <Button onClick={copyURL}>
-              <p className="font-semibold font-mono text-center">Copy it yo</p>
+              <p className="font-semibold text-base md:text-2xl font-mono text-center">
+                Copy it yo
+              </p>
             </Button>
             <div className="bg-gradient-to-t from-transparent from-0% via-violet-300 via-50% to-transparent to-100% w-0.5 mt-5 h-14"></div>
             <Button onClick={resetForm}>
-              <p className="font-semibold font-mono text-center">Another Go</p>
+              <p className="font-semibold text-base md:text-2xl font-mono text-center">
+                Another Go
+              </p>
             </Button>
           </div>
         )}
